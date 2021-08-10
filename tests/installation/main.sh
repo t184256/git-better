@@ -48,4 +48,4 @@ echo 'aliased output check: git=git-better vanilla-clone'
 echo 'smoke test: compare two clones'
 	git-original clone repo clone-original
 	git vanilla-clone repo clone-better
-	diff --exclude index -r clone-original clone-better
+	diff --exclude logs --exclude index -r clone-original clone-better
