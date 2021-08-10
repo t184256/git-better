@@ -4,6 +4,22 @@
 
 set -ueo pipefail
 
+[[ "${FROZEN:-0}" != 1 ]] && \
+	FROZEN=1 exec faketime -f '2000-01-01 00:00:00' bash "$0"
+
+ORIGINAL_GIT=$(command -v git)
+deterministic_reclone() {
+	# assumes time's already frozen, otherwise there's more nondeterminism
+	from=$1; to=$2
+	ln -s "$1" neutral_location
+	$ORIGINAL_GIT clone neutral_location "$2"
+	rm neutral_location
+	pushd "$2"
+		rm .git/index
+		$ORIGINAL_GIT repack -Ad --threads=1
+	popd
+}
+
 
 echo 'setup: temporary directory'
 	tmpdir=$(realpath $(mktemp -d))
@@ -37,7 +53,7 @@ echo 'output check: git-better vanilla-clone'
 
 echo 'setup: alias'
 	shopt -s expand_aliases
-	alias git-original="$(command -v git)"
+	alias git-original=$ORIGINAL_GIT
 	alias git=git-better
 
 echo 'aliased output check: git=git-better'
@@ -45,7 +61,13 @@ echo 'aliased output check: git=git-better'
 echo 'aliased output check: git=git-better vanilla-clone'
 	[[ "$(git vanilla-clone 2>&1)" == "$(git-original clone 2>&1)" ]]
 
-echo 'smoke test: compare two clones'
+echo 'smoke test: loosely compare two clones'
 	git-original clone repo clone-original
+	sleep 2
 	git vanilla-clone repo clone-better
-	diff --exclude index -r clone-original clone-better
+	diff --exclude index -ur clone-original clone-better
+
+echo 'smoke test: strictly compare their re-clones'
+	deterministic_reclone clone-original reclone-original
+	deterministic_reclone clone-better reclone-better
+	diff -ur reclone-original reclone-better

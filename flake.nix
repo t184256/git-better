@@ -24,9 +24,10 @@
               flake8-import-order
               codespell
             ]) ++ (with pkgs; [
-              gnumake
               bash
               git
+              gnumake
+              libfaketime
             ]);
             checkPhase = "make check";
           };

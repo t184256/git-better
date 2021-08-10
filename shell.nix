@@ -17,7 +17,9 @@ pkgs.mkShell {
     flake8-import-order
     codespell
   ]) ++ (with pkgs; [
+    bash
     git
     gnumake
+    libfaketime
   ]);
 }
