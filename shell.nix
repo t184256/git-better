@@ -1,16 +1,23 @@
 { pkgs ? import <nixpkgs> { } }:
 pkgs.mkShell {
   buildInputs = with pkgs; [
-    # TODO: add generic dependencies
     (python3.withPackages (ps: with ps; [
-      # TODO: add python dependencies
+      GitPython
     ]))
   ];
-  nativeBuildInputs = with pkgs.python3Packages; [
-    pytest
+  nativeBuildInputs = [
+    (pkgs.python3.withPackages (ps: with ps; [
+      GitPython
+      pytest
+      pytest-mock
+    ]))
+  ] ++ (with pkgs.python3Packages; [
     coverage
     flake8
     flake8-import-order
     codespell
-  ] ++ [ pkgs.gnumake ];
+  ]) ++ (with pkgs; [
+    git
+    gnumake
+  ]);
 }

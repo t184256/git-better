@@ -1,6 +1,13 @@
-# PROJECTNAME
+# git-better
 
-This is a template repository for Python development with Nix.
+## Overview
 
-TODO: `nix flake lock` if it's an app, ignore `flake.lock` otherwise
-TODO: find and address all other TODOs
+A set of opinionated wrappers to speed up and improve `git` usage.
+
+Usable as both a library (`import git_better as git`)
+and a command-line tool (`alias git=git-better`).
+
+## Currently implemented
+
+`git vanilla-clone`, offering nothing beneficial over regular `git clone`.
+Do not ship, only for testing purposes.

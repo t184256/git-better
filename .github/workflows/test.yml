@@ -9,14 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: pip3 install pytest
+      - run: pip3 install pytest pytest-mock
       - run: make unit
 
   coverage:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: pip3 install pytest coverage
+      - run: pip3 install pytest pytest-mock coverage
       - run: make coverage
 
   lint:

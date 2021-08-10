@@ -1,19 +1,22 @@
+# SPDX-FileCopyrightText: 2021 git-better authors (see AUTHORS)
+# SPDX-License-Identifier: License: GPL-3.0-or-later
+
 from setuptools import setup
 
 setup(
-    name='project-name',  # TODO: replace
+    name='git-better',
     version='0.0.1',
-    url='https://your.git.forge/USERNAME/project-name',  # TODO: replace
-    author='Full Name',  # TODO: replace
-    author_email='login@example.com',  # TODO: replace
-    description="TODO",  # TODO: replace
+    url='https://github.com/t184256/git-better',
+    author='Alexander Sosedkin',
+    author_email='monk@unboiled.info',
+    description="A set of opinionated git wrappers",
     packages=[
-        'project_name',  # TODO: replace
+        'git_better',
     ],
-    install_requires=[],  # TODO: specify python dependencies
+    install_requires=['GitPython'],
     entry_points={
         'console_scripts': [
-            'project-name = project_name.main:main',  # TODO: rename
+            'git-better = git_better.main:main',
         ],
     },
 )

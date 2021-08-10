@@ -1,6 +1,5 @@
 {
-  # TODO: set meaningful description
-  description = "TODO";
+  description = "A set of opinionated git wrappers";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
   #inputs.nixpkgs.url = "github:NixOS/nixpkgs";
@@ -10,29 +9,33 @@
       (system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
-          # TODO: replace project-name with a dashed project name
-          project-name = pkgs.python3Packages.buildPythonPackage {
-            pname = "project-name";  # TODO: replace
+          git-better = pkgs.python3Packages.buildPythonPackage {
+            pname = "git-better";
             version = "0.0.1";
             src = ./.;
             propagatedBuildInputs = with pkgs.python3Packages; [
-              # TODO: list python dependencies
+              GitPython
             ];
-            checkInputs = with pkgs.python3Packages; [
+            checkInputs = (with pkgs.python3Packages; [
               pytest
+              pytest-mock
               coverage
               flake8
               flake8-import-order
               codespell
-            ] ++ [ pkgs.gnumake ];
+            ]) ++ (with pkgs; [
+              gnumake
+              bash
+              git
+            ]);
             checkPhase = "make check";
           };
         in
         {
-          packages.project-name = project-name;  # TODO: replace
-          defaultPackage = project-name;  # TODO: replace
-          apps.project-name = flake-utils.lib.mkApp { drv = project-name; }; # TODO: replace
-          defaultApp = project-name;  # TODO: replace
+          packages.git-better = git-better;
+          defaultPackage = git-better;
+          apps.git-better = flake-utils.lib.mkApp { drv = git-better; };
+          defaultApp = git-better;
           devShell = import ./shell.nix { inherit pkgs; };
         }
       );
