@@ -4,6 +4,19 @@
 
 set -ueo pipefail
 
+compare_checkouts() {
+	diff --exclude .git -ru "$1" "$2"
+	diff -u \
+		<(cd "$1"; git log -p --all --graph --parents 2>&1) \
+		<(cd "$2"; git log -p --all --graph --parents 2>&1)
+	diff -u \
+		<(cd "$1"; git remote -v show -n 2>&1) \
+		<(cd "$2"; git remote -v show -n 2>&1)
+	diff -u \
+		<(cd "$1"; git bundle create - --all 2>/dev/null) \
+		<(cd "$2"; git bundle create - --all 2>/dev/null)
+
+}
 
 echo 'setup: temporary directory'
 	tmpdir=$(realpath $(mktemp -d))
@@ -46,6 +59,6 @@ echo 'aliased output check: git=git-better vanilla-clone'
 	[[ "$(git vanilla-clone 2>&1)" == "$(git-original clone 2>&1)" ]]
 
 echo 'smoke test: compare two clones'
-	git-original clone repo clone-original
-	git vanilla-clone repo clone-better
-	diff --exclude logs --exclude index -r clone-original clone-better
+	git-original clone repo clone-original 2>/dev/null
+	git vanilla-clone repo clone-better 2>/dev/null
+	compare_checkouts clone-original clone-better
